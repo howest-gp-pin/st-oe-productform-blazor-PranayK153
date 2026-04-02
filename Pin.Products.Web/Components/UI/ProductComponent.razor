@@ -8,11 +8,13 @@
     <p>@Product.Price €</p>
     <div>
         <button class="btn btn-outline-info" >Edit</button>
-        <button class="btn btn-outline-danger">Delete</button>
+        <button class="btn btn-outline-danger" @onclick="@(() => OnDelete.InvokeAsync(Product.Id))">Delete</button>
     </div>
 </div>
 
 @code {
     [Parameter]
     public ProductModel Product { get; set; }
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
 }

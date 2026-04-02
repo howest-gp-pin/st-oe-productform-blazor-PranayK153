@@ -1,4 +1,9 @@
 ﻿<div class="row">
+    <div class="col col-lg-2">
+        <button type="button" class="btn btn-outline-info" @onclick="@(() => OnAdd.InvokeAsync())">New</button>
+    </div>
+</div>
+<div class="row">
     @foreach (var product in Products)
     {
         <ProductComponent Product="product"></ProductComponent>
@@ -8,4 +13,6 @@
 @code {
     [Parameter]
     public IEnumerable<ProductModel> Products { get; set; }
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
 }

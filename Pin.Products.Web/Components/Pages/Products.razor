@@ -1,17 +1,39 @@
 ﻿@page "/products"
 @inject IProductApiService ProductService
 <h3>Products</h3>
-@if(ProductModels is not null)
-{ 
-    @foreach(var product in ProductModels)
-    { 
-        <p>@product</p>
+@* show error messages *@
+@if (errorMessage is not null)
+{
+    <AlertComponent Style="danger" Message="@errorMessage"></AlertComponent>
+}
+@* show user messages *@
+@if (message is not null)
+{
+    <AlertComponent Style="info" Message="@message"></AlertComponent>
+}
+@if (productModels is null)
+{
+    <LoadingComponent></LoadingComponent>
+}
+else
+{
+    @if (newProduct is not null)
+    {
+        //show the new category form
+        <ProductFormComponent NewProduct="newProduct" OnSave="Save" OnCancel="Cancel"></ProductFormComponent>
+    }
+    else
+    {
+        @* show category list component *@
+        <ProductListComponent Products="productModels" OnAdd="NewProduct" ></ProductListComponent>
     }
 }
 @code {
     private string errorMessage;
     private string message;
-    public IEnumerable<ProductModel> ProductModels { get; set; }
+    private CreateOrUpdateProductModel newProduct;
+    private IEnumerable<ProductModel> productModels;
+
     protected override async Task OnInitializedAsync()
     {
         await GetProducts();
@@ -20,16 +42,62 @@
     private async Task GetProducts()
     {
         errorMessage = null;
-        ProductModels = null;
+        productModels = null;
         var result = await ProductService.GetAllAsync();
         if (result.IsSuccess)
         {
-            ProductModels = result.Data;
+            productModels = result.Data;
         }
         else
         {
             //display errors
             errorMessage = string.Join(' ', result.Errors);
         }
+    }
+
+
+    //OnAdd
+    //display the form
+    private void NewProduct()
+    {
+        errorMessage = null;
+        newProduct = new();
+    }
+    //method to send a post request to create a new category
+    private async Task Save(CreateOrUpdateProductModel createOrUpdateProductModel)
+    {
+        var result = new ResultModel<ProductModel>();
+        if(createOrUpdateProductModel.Id.Equals(0))
+        {
+            result = await ProductService.CreateAsync(createOrUpdateProductModel);
+        }
+        else
+        {
+            //update the category
+            result = await ProductService.UpdateAsync(createOrUpdateProductModel);
+        }
+        //check if succees
+        if(result.IsSuccess)
+        {
+            //show succes message
+            if (newProduct.Id.Equals(0))
+                message = "Product succesfully created";
+            else
+                message = "Product succesfully updated";
+        }
+        else
+        {
+            //show error message
+            errorMessage = string.Join(' ', result.Errors);
+        }
+        //reload products (hide form and show result)
+        await GetProducts();
+        newProduct = null;
+    }
+
+    //Cancel button (=> close form)
+    private void Cancel()
+    {
+        newProduct = null;
     }
 }

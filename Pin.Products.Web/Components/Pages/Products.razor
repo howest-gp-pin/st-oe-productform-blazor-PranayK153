@@ -25,7 +25,7 @@ else
     else
     {
         @* show category list component *@
-        <ProductListComponent Products="productModels" OnAdd="NewProduct" ></ProductListComponent>
+        <ProductListComponent Products="productModels" OnAdd="NewProduct" OnDelete="Delete" ></ProductListComponent>
     }
 }
 @code {
@@ -99,5 +99,24 @@ else
     private void Cancel()
     {
         newProduct = null;
+    }
+
+
+    //Delete
+    private async Task Delete(int id)
+    {
+        errorMessage = null;
+        if (await ProductService.DeleteAsync(id))
+        {
+            //show success message
+            message = "Product succesfully deleted";
+        }
+        else
+        {
+            //show errorMessage
+            errorMessage = "Product not deleted!";
+        }
+        //reload the categories
+        await GetProducts();
     }
 }

@@ -12,6 +12,16 @@
             <InputText @bind-Value="NewProduct.Description" class="form-control" />
             <ValidationMessage For="@(() => NewProduct.Description)" />
         </div>
+        <div class="form-group">
+            <label>Price:</label>
+            <InputNumber @bind-Value="NewProduct.Price" class="form-control" />
+            <ValidationMessage For="@(() => NewProduct.Price)" />
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <InputSelect @bind-Value="NewProduct.CategoryId"></InputSelect>
+            <ValidationMessage For="@(() => NewProduct.CategoryId)" />
+        </div>
         <button type="submit" class="btn btn-outline-info">Save</button>
         <button type="button" class="btn btn-outline-warning" @onclick="@(() => OnCancel.InvokeAsync())">Cancel</button>
     </EditForm>

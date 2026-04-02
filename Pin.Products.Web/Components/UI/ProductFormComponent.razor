@@ -1,4 +1,6 @@
-﻿<div class="col col-lg-4 mx-auto">
+﻿@inject Pin.Products.Core.Services.Interfaces.ICategoryApiService CategoryService
+
+<div class="col col-lg-4 mx-auto">
     <EditForm Model="NewProduct" OnValidSubmit="@(() => OnSave.InvokeAsync(NewProduct))">
         @* activate data validation *@
         <DataAnnotationsValidator />
@@ -19,12 +21,19 @@
         </div>
         <div class="form-group">
             <label>Category:</label>
-            @foreach(var category in categoryModels)
-            {
-                <InputSelect @bind-Value="category.Name" class="form-control" />
-            }
+            <InputSelect TValue="int" @bind-Value="NewProduct.CategoryId" class="form-control">
+                <option value="">-- kies een categorie --</option>
+                @if (categoryModels is not null)
+                {
+                    @foreach (var category in categoryModels)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
             <ValidationMessage For="@(() => NewProduct.CategoryId)" />
         </div>
+        
         <button type="submit" class="btn btn-outline-info">Save</button>
         <button type="button" class="btn btn-outline-warning" @onclick="@(() => OnCancel.InvokeAsync())">Cancel</button>
     </EditForm>
@@ -39,7 +48,7 @@
     public EventCallback OnCancel { get; set; }
 
 
-    private readonly CategoryApiService categoryApiService;
+    
     private IEnumerable<CategoryModel> categoryModels;
 
     protected override async Task OnInitializedAsync()
@@ -49,10 +58,14 @@
 
     private async Task GetCategories()
     {
-        var result = await categoryApiService.GetAllAsync();
+        var result = await CategoryService.GetAllAsync();
         if (result.IsSuccess)
         {
             categoryModels = result.Data;
+        }
+        else
+        {
+            categoryModels = Enumerable.Empty<CategoryModel>();
         }
     }
 }

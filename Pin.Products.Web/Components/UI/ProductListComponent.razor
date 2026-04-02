@@ -1,0 +1,11 @@
+﻿<div class="row">
+    @foreach (var product in Products)
+    {
+        <ProductComponent Product="product"></ProductComponent>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<ProductModel> Products { get; set; }
+}

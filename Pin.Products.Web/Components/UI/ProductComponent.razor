@@ -1,5 +1,11 @@
 ﻿<div class="col col-lg-2 border border-1 rounded rounded-2 text-center m-1 p-2">
+    @foreach(var image in Product.Images)
+    {
+        <img src="image" />
+    }
     <p>@Product.Title</p>
+    <p>Price</p><br />
+    <p>@Product.Price €</p>
     <div>
         <button class="btn btn-outline-info" >Edit</button>
         <button class="btn btn-outline-danger">Delete</button>

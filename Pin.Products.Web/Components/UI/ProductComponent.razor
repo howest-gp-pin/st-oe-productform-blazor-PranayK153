@@ -1,13 +1,19 @@
 ﻿<div class="col col-lg-2 border border-1 rounded rounded-2 text-center m-1 p-2">
-    @foreach(var image in Product.Images)
+    @if (Product?.Images is not null && Product.Images.Any())
     {
-        <img src="image" />
+        var first = Product.Images.FirstOrDefault();
+        <img src="@first" class="img-fluid" />
+    }
+    else
+    {
+        <img src="https://placehold.co/600x400" class="img-fluid" />
     }
     <p>@Product.Title</p>
+    <p>@Product.Category.Name</p>
     <p>Price</p><br />
     <p>@Product.Price €</p>
     <div>
-        <button class="btn btn-outline-info" >Edit</button>
+        <button class="btn btn-outline-info" @onclick="@(() => OnEdit.InvokeAsync(Product))" >Edit</button>
         <button class="btn btn-outline-danger" @onclick="@(() => OnDelete.InvokeAsync(Product.Id))">Delete</button>
     </div>
 </div>
@@ -17,4 +23,6 @@
     public ProductModel Product { get; set; }
     [Parameter]
     public EventCallback<int> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback<ProductModel> OnEdit { get; set; }
 }

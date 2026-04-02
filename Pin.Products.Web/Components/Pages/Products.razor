@@ -25,7 +25,7 @@ else
     else
     {
         @* show category list component *@
-        <ProductListComponent Products="productModels" OnAdd="NewProduct" OnDelete="Delete" ></ProductListComponent>
+        <ProductListComponent Products="productModels" OnAdd="NewProduct" OnDelete="Delete" OnEdit="Edit" ></ProductListComponent>
     }
 }
 @code {
@@ -118,5 +118,18 @@ else
         }
         //reload the categories
         await GetProducts();
+    }
+
+
+    //Edit
+    private void Edit(ProductModel productModel)
+    {
+        newProduct = new();
+        newProduct.Id = productModel.Id;
+        newProduct.Title = productModel.Title;
+        newProduct.Description = productModel.Description;
+        newProduct.Price = productModel.Price;
+        newProduct.CategoryId = productModel.Category.Id;
+        newProduct.Images = productModel.Images;
     }
 }

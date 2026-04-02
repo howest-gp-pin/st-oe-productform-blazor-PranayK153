@@ -6,7 +6,7 @@
 <div class="row">
     @foreach (var product in Products)
     {
-        <ProductComponent Product="product" OnDelete="OnDelete"></ProductComponent>
+        <ProductComponent Product="product" OnDelete="OnDelete" OnEdit="OnEdit"></ProductComponent>
     }
 </div>
 
@@ -17,4 +17,6 @@
     public EventCallback OnAdd { get; set; }
     [Parameter]
     public EventCallback<int> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback<ProductModel> OnEdit { get; set; }
 }

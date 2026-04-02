@@ -9,9 +9,27 @@
     }
 }
 @code {
+    private string errorMessage;
+    private string message;
     public IEnumerable<ProductModel> ProductModels { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        
+        await GetProducts();
+    }
+
+    private async Task GetProducts()
+    {
+        errorMessage = null;
+        ProductModels = null;
+        var result = await ProductService.GetAllAsync();
+        if (result.IsSuccess)
+        {
+            ProductModels = result.Data;
+        }
+        else
+        {
+            //display errors
+            errorMessage = string.Join(' ', result.Errors);
+        }
     }
 }
